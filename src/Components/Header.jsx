@@ -1,15 +1,11 @@
-import React from 'react'
 
-function Header() {
-  return (
-   <>
-   <header className='nav-full'>
-     <img className='nav-img' src='https://github.com/scrimba/learn-react/blob/main/03.%20React%20State/02.%20Chef%20Claude%20-%20Header/images/chef-claude-icon.png?raw=true'  />
-     <span>Chef Claude</span>
-   </header>
-
-   </>
-  )
+export default function Header() {
+    return (
+        <header className="header">
+            <img 
+                src="https://github.com/scrimba/learn-react/blob/main/04.%20Side%20Effects/02.%20Meme%20Generator%20Starting%20Point/images/troll-face.png?raw=true" 
+            />
+            <h1>Meme Generator</h1>
+        </header>
+    )
 }
-
-export default Header

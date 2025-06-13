@@ -1,46 +1,59 @@
-import React, { useState } from 'react'
-import ClaudeRecipe from './ClaudeRecipe';
-import IngredientsLists from './IngredientsLists';
-import { HfInference } from '@huggingface/inference';
-import { getRecipeFromMistral } from './ai';
-function Main() {
-
-    const [indgredients,setindgredients]= useState([]);
-    const[recipe,setrecipe]=useState("");
-    console.log('running');
-  
-    const indgredientlist= indgredients.map((item)=>(
-         <li kety={item }>{item}</li>
-    ))
-
-    function handleonSubmit(formdata){
-      
-        const item = formdata.get("ingredient");
-      
-        setindgredients(previndgredients => [...previndgredients,item]);
-        console.log(indgredients);
-    };
-    async function  getrecipe(){
-     const recipeMarkdown= await getRecipeFromMistral(indgredients)
-     setrecipe(recipeMarkdown);
-    }
-  
-  return (
-    <>
-<div className="wrapper">
+import { useEffect, useState } from "react"
 
 
-   <form action={handleonSubmit} >
-    <input type="text" aria-label="add indgredient" placeholder="Oregaon etc" name="ingredient" />
-    <button>+ Add ingredient</button>
-   </form>
-   {indgredientlist.length>0 && <IngredientsLists list = {indgredientlist} click={getrecipe} /> }
-{ recipe  &&  <ClaudeRecipe recipe={recipe} />
-}  
-   </div>
-    </>
-  )
+export default function Main() {
+  const [memeclass,setmemeclass]= useState({
+    imgurl:"http://i.imgflip.com/1bij.jpg",
+    topText:"One does not simply",
+    bottomText:"Walk into Mordor"
+
+  })
+  const[meme,setmeme]=useState([]);
+  useEffect(()=>{
+
+        fetch("https://api.imgflip.com/get_memes").then(res=>res.json()).then((items)=> setmeme(items.data.memes)
+            
+        );
+        
+      },[])
+  function handleonChange(event){
+    const {value}= event.currentTarget
+    setmemeclass((prevmeme)=>({
+      ...prevmeme,
+      topText:value,
+    }));
+  }
+  function getmemeimg(){
+    const randomnum = Math.floor(Math.random()*meme.length)
+    const imgurl1 = meme[randomnum].url;
+    setmemeclass(prevMeme=>({...prevMeme,imgurl:imgurl1}))
+  }
+    return (
+        <main>
+            <div className="form">
+                <label>Top Text
+                    <input
+                        type="text"
+                        placeholder="One does not simply"
+                        name="topText"
+                        onChange={handleonChange}
+                    />
+                </label>
+
+                <label>Bottom Text
+                    <input
+                        type="text"
+                        placeholder="Walk into Mordor"
+                        name="bottomText"
+                    />
+                </label>
+                <button onClick={getmemeimg}>Get a new meme image 🖼</button>
+            </div>
+            <div className="meme">
+                <img src={memeclass.imgurl} />
+                <span className="top">{memeclass.topText}</span>
+                <span className="bottom">{memeclass.bottomText}</span>
+            </div>
+        </main>
+    )
 }
-
-
-export default Main
